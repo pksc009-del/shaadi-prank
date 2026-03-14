@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>AI Shaadi Predictor</title>
+
+<style>
+
+body{
+font-family:Arial;
+text-align:center;
+background:linear-gradient(45deg,#ff9a9e,#fad0c4,#fbc2eb,#a6c1ee);
+margin:0;
+}
+
+.card{
+background:white;
+width:360px;
+margin:40px auto;
+padding:25px;
+border-radius:18px;
+box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+
+button{
+padding:12px 20px;
+margin:10px;
+border:none;
+border-radius:10px;
+background:#ff4081;
+color:white;
+font-size:16px;
+cursor:pointer;
+}
+
+input{
+padding:10px;
+margin:10px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+.pointer{
+width:0;
+height:0;
+border-left:20px solid transparent;
+border-right:20px solid transparent;
+border-bottom:30px solid red;
+margin:auto;
+}
+
+#wheel{
+width:300px;
+height:300px;
+border-radius:50%;
+margin:auto;
+border:8px solid #333;
+transition:transform 6s ease-out;
+
+background:conic-gradient(
+#ff7675 0deg 45deg,
+#74b9ff 45deg 90deg,
+#55efc4 90deg 135deg,
+#ffeaa7 135deg 180deg,
+#a29bfe 180deg 225deg,
+#fd79a8 225deg 270deg,
+#fab1a0 270deg 315deg,
+#81ecec 315deg 360deg
+);
+
+}
+
+.confetti{
+position:fixed;
+font-size:24px;
+top:-10px;
+animation:fall 3s linear infinite;
+}
+
+@keyframes fall{
+0%{transform:translateY(-10px)}
+100%{transform:translateY(100vh)}
+}
+
+.firework{
+position:fixed;
+font-size:40px;
+animation:boom 1s ease-out;
+}
+
+@keyframes boom{
+0%{transform:scale(0)}
+100%{transform:scale(2);opacity:0}
+}
+
+</style>
+</head>
+
+<body>
+
+<audio id="music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+
+<div class="card" id="l1">
+
+<h2>Enter Name</h2>
+
+<input id="name" placeholder="Type Pragya">
+
+<br>
+
+<button onclick="checkName()">Start</button>
+
+<p id="error" style="color:red"></p>
+
+</div>
+
+<div class="card" id="l2" style="display:none">
+
+<h2>AI Analysis</h2>
+
+<p id="ai"></p>
+
+<button onclick="next(2)">Continue</button>
+
+</div>
+
+<div class="card" id="l3" style="display:none">
+
+<h2>Spin Profession Wheel</h2>
+
+<div class="pointer"></div>
+
+<div id="wheel"></div>
+
+<button onclick="spin()">Spin</button>
+
+<h3 id="spinResult"></h3>
+
+<button onclick="next(3)">Next</button>
+
+</div>
+
+<div class="card" id="l4" style="display:none">
+
+<h2>Choose Shaadi Year</h2>
+
+<input id="year" type="number">
+
+<br>
+
+<button onclick="next(4)">Next</button>
+
+</div>
+
+<div class="card" id="l5" style="display:none">
+
+<h2>Partner Name</h2>
+
+<input id="partner">
+
+<br>
+
+<button onclick="final()">Predict</button>
+
+</div>
+
+<div class="card" id="l6" style="display:none">
+
+<h1 id="result"></h1>
+
+<button onclick="share()">Share on WhatsApp</button>
+
+</div>
+
+<script>
+
+let professions=[
+"Doctor",
+"Engineer",
+"Advocate",
+"Police",
+"Teacher",
+"Artist",
+"Scientist",
+"Business"
+];
+
+function checkName(){
+
+let name=document.getElementById("name").value.toLowerCase();
+
+if(name==="pragya"){
+
+document.getElementById("music").play();
+
+next(1);
+
+fakeAI();
+
+}else{
+
+document.getElementById("error").innerText="Sirf 'Pragya' likho 😄";
+
+}
+
+}
+
+function next(n){
+
+document.getElementById("l"+n).style.display="none";
+document.getElementById("l"+(n+1)).style.display="block";
+
+}
+
+function fakeAI(){
+
+let text="AI analysing compatibility...";
+let i=0;
+let el=document.getElementById("ai");
+
+let t=setInterval(()=>{
+
+el.innerHTML+=text[i];
+
+i++;
+
+if(i>=text.length) clearInterval(t);
+
+},50);
+
+}
+
+let wheel=document.getElementById("wheel");
+
+function spin(){
+
+let randomDeg=3600+Math.floor(Math.random()*360);
+
+wheel.style.transform="rotate("+randomDeg+"deg)";
+
+setTimeout(()=>{
+
+let deg=randomDeg%360;
+
+let index=Math.floor((360-deg)/45)%8;
+
+let result=professions[index];
+
+document.getElementById("spinResult").innerText="Result: "+result;
+
+},6000);
+
+}
+
+function final(){
+
+let year=document.getElementById("year").value;
+
+let partner=document.getElementById("partner").value;
+
+document.getElementById("l5").style.display="none";
+document.getElementById("l6").style.display="block";
+
+document.getElementById("result").innerHTML=
+
+"AI Result 🤖<br><br>"+
+
+"Jo bhi year ("+year+") ya naam ("+partner+") diya hai...<br><br>"+
+
+"<b>Shaadi 2027 me hi hogi!</b><br><br>Kalyan Namastu 💐";
+
+confetti();
+fireworks();
+
+}
+
+function confetti(){
+
+for(let i=0;i<30;i++){
+
+let c=document.createElement("div");
+
+c.className="confetti";
+
+c.innerText="🌸";
+
+c.style.left=Math.random()*100+"vw";
+
+document.body.appendChild(c);
+
+}
+
+}
+
+function fireworks(){
+
+for(let i=0;i<10;i++){
+
+let f=document.createElement("div");
+
+f.className="firework";
+
+f.innerText="💥";
+
+f.style.left=Math.random()*100+"vw";
+
+f.style.top=Math.random()*80+"vh";
+
+document.body.appendChild(f);
+
+}
+
+}
+
+function share(){
+
+let msg="AI ne predict kiya 😄 Shaadi 2027 me hi hogi!";
+
+window.open("https://wa.me/?text="+encodeURIComponent(msg));
+
+}
+
+</script>
+
+</body>
+</html>
